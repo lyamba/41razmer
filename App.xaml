@@ -6,12 +6,15 @@
     <Application.Resources>
         <Style TargetType="{x:Type Window}">
             <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="20"/>
         </Style>
         <Style TargetType="{x:Type Page}">
             <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="20"/>
         </Style>
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="FontFamily" Value="Comic Sans MS"/>
+            <Setter Property="FontSize" Value="20"/>
         </Style>
 
 

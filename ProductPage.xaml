@@ -6,15 +6,41 @@
       xmlns:local="clr-namespace:Кудрявцева41размер"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ProductPage">
+      Title="ProductPage"
+      DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ListView Grid.Row="1" Name="ProductListView" Margin="10,0">
+        <TextBlock Grid.Row="0" Margin="10">
+    <Run Text="Количество: "/>
+    <Run Text="{Binding ElementName=ProductListView, Path=Items.Count, Mode=OneWay}" FontWeight="Bold"/>
+    <Run Text=" из "/>
+    <Run Text="{Binding TotalCount}" FontWeight="Bold"/>
+        </TextBlock>
+
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,10">
+            <TextBlock Text="Поиск:" VerticalAlignment="Center"/>
+            <TextBox Name="TBoxSearch" Width="150" TextChanged="TBoxSearch_TextChanged" Margin="5,0,15,0"/>
+
+            <TextBlock Text="Сортировка:" VerticalAlignment="Center"/>
+            <RadioButton Name="RadioAsc" Content="По возрастанию стоимости" GroupName="Sort" Checked="Sort_Checked" Margin="5,0,10,0"/>
+            <RadioButton Name="RadioDesc" Content="По убыванию стоимости" GroupName="Sort" Checked="Sort_Checked" Margin="0,0,15,0"/>
+
+            <TextBlock Text="Скидка: " VerticalAlignment="Center"/>
+            <ComboBox Name="ComboDiscount" SelectionChanged="ComboDiscount_SelectionChanged" Width="150">
+                <ComboBoxItem Content="Все" IsSelected="True"/>
+                <ComboBoxItem Content="0-9,99%"/>
+                <ComboBoxItem Content="10-14,99%"/>
+                <ComboBoxItem Content="15% и более"/>
+            </ComboBox>
+        </WrapPanel>
+
+        <ListView Grid.Row="2" Name="ProductListView" Margin="10,0">
 
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -45,14 +71,14 @@
                         </Image>
 
                         <StackPanel Grid.Column="1" Margin="20,0,10,0" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding ProductName}" FontSize="14" TextWrapping="Wrap" Margin="0, 0, 0, 20" FontWeight="Bold"/>
-                            <TextBlock Text="{Binding ProductDescription}" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,5"/>
-                            <TextBlock Text="{Binding ProductManufacturer}" FontSize="14" Margin="0,0,0,5"/>
+                            <TextBlock Text="{Binding ProductName}" FontSize="18" TextWrapping="Wrap" Margin="0, 0, 0, 20" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding ProductDescription}" FontSize="19" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                            <TextBlock Text="{Binding ProductManufacturer}" FontSize="18" Margin="0,0,0,5"/>
                             <TextBlock Text="{Binding ProductCost, StringFormat={}{0:0} рублей}" FontSize="14"/>
                         </StackPanel>
 
                         <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                            <TextBlock Text="Скидка" FontSize="14" HorizontalAlignment="Right"/>
+                            <TextBlock Text="Скидка" FontSize="22" HorizontalAlignment="Right"/>
                             <TextBlock Text="{Binding ProductDiscountAmount, StringFormat={}{0} %}" FontSize="24" FontWeight="Bold" HorizontalAlignment="Right"/>
                         </StackPanel>
                     </Grid>
