@@ -4,6 +4,17 @@
              xmlns:local="clr-namespace:Кудрявцева41размер"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+        </Style>
+        <Style TargetType="{x:Type Page}">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+        </Style>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="Comic Sans MS"/>
+        </Style>
+
+
         <Style TargetType="Button">
             <Setter Property="Margin" Value="5"/>
             <Setter Property="Width" Value="175"/>

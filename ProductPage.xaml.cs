@@ -18,15 +18,18 @@ namespace Кудрявцева41размер
     /// <summary>
     /// Логика взаимодействия для ProductPage.xaml
     /// </summary>
-    public partial class ProductPage : Page
-    {
-        public ProductPage()
+        public partial class ProductPage : Page
         {
-            InitializeComponent();
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Manager.MainFrame.Navigate(new AddEditPage());
+            public ProductPage()
+            {
+                InitializeComponent();
+                LoadData();
+            }
+
+            private void LoadData()
+            {
+                var products = Kudryavtseva41Entities.GetContext().Product.ToList();
+                ProductListView.ItemsSource = products;
+            }
         }
     }
-}
