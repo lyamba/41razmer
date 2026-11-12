@@ -28,5 +28,12 @@ namespace Кудрявцева41размер
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Order { get; set; }
+        public string FullAddress
+        {
+            get
+            {
+                return $"{PickupPointPostalCode}, {PickupPointCity}, {PickupPointStreet}, д. {PickupPointHouse}";
+            }
+        }
     }
 }

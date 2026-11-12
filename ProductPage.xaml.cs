@@ -19,81 +19,120 @@ namespace Кудрявцева41размер
     /// <summary>
     /// Логика взаимодействия для ProductPage.xaml
     /// </summary>
-    
         public partial class ProductPage : Page, INotifyPropertyChanged
         {
+            List<OrderProduct> selectedOrderProducts = new List<OrderProduct>();
+            List<Product> selectedProducts = new List<Product>();
+        User currentUser;
 
-        public ProductPage(User user)
-        {
-            InitializeComponent();
-            DataContext = this;
-
-            if (user != null)
+            public ProductPage(User user)
             {
-                FIOTB.Text = "Вы авторизованы как " + user.UserSurname + " " + user.UserName + " " + user.UserPatronymic;
+                InitializeComponent();
+                DataContext = this;
 
-                switch (user.RoleID)
+            currentUser = user;
+
+                if (user != null)
                 {
-                    case 1: RoleTB.Text = "Роль: Администратор"; break;
-                    case 2: RoleTB.Text = "Роль: Менеджер"; break;
-                    case 3: RoleTB.Text = "Роль: Клиент"; break;
+                    FIOTB.Text = "Вы авторизованы как " + user.UserSurname + " " + user.UserName + " " + user.UserPatronymic;
+                    switch (user.RoleID)
+                    {
+                        case 1: RoleTB.Text = "Роль: Администратор"; break;
+                        case 2: RoleTB.Text = "Роль: Менеджер"; break;
+                        case 3: RoleTB.Text = "Роль: Клиент"; break;
+                    }
                 }
-            }
-            else
-            {
-                FIOTB.Text = "Вы вошли как гость";
-                RoleTB.Text = "Роль: Гость";
+                else
+                {
+                    FIOTB.Text = "Вы вошли как гость";
+                    RoleTB.Text = "Роль: Гость";
+                }
+
+                UpdateData();
             }
 
-            UpdateData();
-        }
-
-        private void LoadData()
+            private void LoadData()
             {
                 var products = Kudryavtseva41Entities.GetContext().Product.ToList();
                 ProductListView.ItemsSource = products;
             }
-        private int _totalCount;
-        public int TotalCount
-        {
-            get { return _totalCount; }
-            set
+
+            private int _totalCount;
+            public int TotalCount
             {
-                _totalCount = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCount"));
+                get { return _totalCount; }
+                set
+                {
+                    _totalCount = value;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCount"));
+                }
             }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
+            public event PropertyChangedEventHandler PropertyChanged;
 
-        private void UpdateData()
+            private void UpdateData()
+            {
+                var products = Kudryavtseva41Entities.GetContext().Product.ToList();
+                TotalCount = Kudryavtseva41Entities.GetContext().Product.Count();
+
+                if (!string.IsNullOrWhiteSpace(TBoxSearch.Text))
+                    products = products.Where(p => p.ProductName.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
+
+                if (ComboDiscount.SelectedIndex == 1)
+                    products = products.Where(p => p.ProductDiscountAmount >= 0 && p.ProductDiscountAmount < 10).ToList();
+                else if (ComboDiscount.SelectedIndex == 2)
+                    products = products.Where(p => p.ProductDiscountAmount >= 10 && p.ProductDiscountAmount < 15).ToList();
+                else if (ComboDiscount.SelectedIndex == 3)
+                    products = products.Where(p => p.ProductDiscountAmount >= 15).ToList();
+
+                if (RadioAsc.IsChecked == true)
+                    products = products.OrderBy(p => p.ProductCost).ToList();
+                else if (RadioDesc.IsChecked == true)
+                    products = products.OrderByDescending(p => p.ProductCost).ToList();
+
+                ProductListView.ItemsSource = products;
+            }
+
+            private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e) { if (IsLoaded) UpdateData(); }
+            private void ComboDiscount_SelectionChanged(object sender, SelectionChangedEventArgs e) { if (IsLoaded) UpdateData(); }
+            private void Sort_Checked(object sender, RoutedEventArgs e) { if (IsLoaded) UpdateData(); }
+
+            private void GoBack_Click(object sender, RoutedEventArgs e)
+            {
+                Manager.MainFrame.Navigate(new AuthPage());
+            }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var products = Kudryavtseva41Entities.GetContext().Product.ToList();
-            TotalCount = Kudryavtseva41Entities.GetContext().Product.Count();
+            if (ProductListView.SelectedItem == null) return;
 
-            if (!string.IsNullOrWhiteSpace(TBoxSearch.Text))
-                products = products.Where(p => p.ProductName.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
+            var prod = ProductListView.SelectedItem as Product;
 
-            if (ComboDiscount.SelectedIndex == 1)
-                products = products.Where(p => p.ProductDiscountAmount >= 0 && p.ProductDiscountAmount < 10).ToList();
-            else if (ComboDiscount.SelectedIndex == 2)
-                products = products.Where(p => p.ProductDiscountAmount >= 10 && p.ProductDiscountAmount < 15).ToList();
-            else if (ComboDiscount.SelectedIndex == 3)
-                products = products.Where(p => p.ProductDiscountAmount >= 15).ToList();
+            var orderProd = selectedOrderProducts.FirstOrDefault(p => p.ProductArticleNumber == prod.ProductArticleNumber);
 
-            if (RadioAsc.IsChecked == true)
-                products = products.OrderBy(p => p.ProductCost).ToList();
-            else if (RadioDesc.IsChecked == true)
-                products = products.OrderByDescending(p => p.ProductCost).ToList();
+            if (orderProd == null)
+            {
+                selectedProducts.Add(prod);
+                selectedOrderProducts.Add(new OrderProduct { ProductArticleNumber = prod.ProductArticleNumber, ProductCount = 1, Product = prod });
+            }
+            else
+            {
+                orderProd.ProductCount++;
+            }
 
-            ProductListView.ItemsSource = products;
+            OrderBtn.Visibility = Visibility.Visible;
+            UpdateData();
         }
 
-        private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e) { if (IsLoaded) UpdateData(); }
-        private void ComboDiscount_SelectionChanged(object sender, SelectionChangedEventArgs e) { if (IsLoaded) UpdateData(); }
-        private void Sort_Checked(object sender, RoutedEventArgs e) { if (IsLoaded) UpdateData(); }
-        private void GoBack_Click(object sender, RoutedEventArgs e)
+        private void OrderBtn_Click(object sender, RoutedEventArgs e)
         {
-            Manager.MainFrame.Navigate(new AuthPage());
+            OrderWindow orderWindow = new OrderWindow(selectedOrderProducts, selectedProducts, currentUser);
+
+            if (orderWindow.ShowDialog() == true)
+            {
+                selectedOrderProducts.Clear();
+                selectedProducts.Clear();
+                OrderBtn.Visibility = Visibility.Collapsed;
+            }
         }
     }
     }

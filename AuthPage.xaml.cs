@@ -23,14 +23,14 @@ namespace Кудрявцева41размер
         {
             private string currentCaptcha = "";
             private int failedAttempts = 0;
-
-            public AuthPage()
+public AuthPage()
             {
                 InitializeComponent();
             CaptchaPanel.Visibility = Visibility.Collapsed;
             CaptchaTB.Visibility = Visibility.Collapsed;
             GenerateCaptcha();
             }
+            
 
             private void LoginBtn_Click(object sender, RoutedEventArgs e)
             {
