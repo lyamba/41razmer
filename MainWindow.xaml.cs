@@ -23,10 +23,10 @@ namespace Кудрявцева41размер
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame.Navigate(new ProductPage());
+            MainFrame.Navigate(new AuthPage());
             Manager.MainFrame = MainFrame;
         }
 
-        
+
     }
 }

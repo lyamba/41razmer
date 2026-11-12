@@ -22,14 +22,33 @@ namespace Кудрявцева41размер
     
         public partial class ProductPage : Page, INotifyPropertyChanged
         {
-            public ProductPage()
+
+        public ProductPage(User user)
+        {
+            InitializeComponent();
+            DataContext = this;
+
+            if (user != null)
             {
-                InitializeComponent();
-                DataContext = this;
-                UpdateData();
+                FIOTB.Text = "Вы авторизованы как " + user.UserSurname + " " + user.UserName + " " + user.UserPatronymic;
+
+                switch (user.RoleID)
+                {
+                    case 1: RoleTB.Text = "Роль: Администратор"; break;
+                    case 2: RoleTB.Text = "Роль: Менеджер"; break;
+                    case 3: RoleTB.Text = "Роль: Клиент"; break;
+                }
+            }
+            else
+            {
+                FIOTB.Text = "Вы вошли как гость";
+                RoleTB.Text = "Роль: Гость";
             }
 
-            private void LoadData()
+            UpdateData();
+        }
+
+        private void LoadData()
             {
                 var products = Kudryavtseva41Entities.GetContext().Product.ToList();
                 ProductListView.ItemsSource = products;
@@ -72,5 +91,9 @@ namespace Кудрявцева41размер
         private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e) { if (IsLoaded) UpdateData(); }
         private void ComboDiscount_SelectionChanged(object sender, SelectionChangedEventArgs e) { if (IsLoaded) UpdateData(); }
         private void Sort_Checked(object sender, RoutedEventArgs e) { if (IsLoaded) UpdateData(); }
+        private void GoBack_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AuthPage());
+        }
     }
     }

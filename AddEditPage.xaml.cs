@@ -26,7 +26,7 @@ namespace Кудрявцева41размер
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Manager.MainFrame.Navigate(new ProductPage());
+            Manager.MainFrame.Navigate(new ProductPage(null));
         }
     }
 }
